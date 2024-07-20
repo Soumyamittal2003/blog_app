@@ -1,9 +1,9 @@
 const { Schema,model } =require ("mongoose");
-const {createHmac} =require("crypto");
+const {createHmac,randomBytes} =require("node:crypto");
 
 const userSchema =new Schema(
     {
-        fullname:{
+        fullName:{
             type:String,
             required:true,
         },
@@ -41,7 +41,7 @@ userSchema.pre("save",function(next){
     const user =this;
     if(!user.isModified("password")){return;} //if there is no change in password then we will not execute the function.
 
-    const salt =randonBytes(16).toString();
+    const salt =randomBytes(16).toString();
     const hashedPassword =createHmac("sha256",salt)
     .update(user.password)
     .digest("hex");
