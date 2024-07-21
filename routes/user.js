@@ -5,17 +5,19 @@ const User = require('../models/user')
 const router =express.Router();
 
 
-router.get('/signin',(req,res) =>{
+router.get('/signin', (req,res) =>{
     return res.render("signin");
 });
 
-router.post('/signin',(req,res)=>{
+router.post('/signin',async(req,res)=>{
     const {email,password} =req.body;
-    const user =User.matchpassword(email,password);
-    console.log("user",user);
-    return res.redirect("/");
-    
-
+    try{
+        const token =await User.matchPasswordAndGenerateToken(email,password);
+        return res.cookie("token",token).redirect("/");
+    }
+    catch(error){
+        return res.render("signin",{error:"Incorrect Email or Password"})
+    }
 })
 
 router.get('/signup',(req,res) =>{
@@ -32,4 +34,10 @@ router.post('/signup', async(req,res) =>{
     return res.redirect("/");
     
 });
+
+
+router.get('/logout',(req,res) =>{
+    res.clearCookie("token").redirect("/");
+
+})
 module.exports=router;
