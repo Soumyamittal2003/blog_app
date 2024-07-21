@@ -9,6 +9,15 @@ router.get('/signin',(req,res) =>{
     return res.render("signin");
 });
 
+router.post('/signin',(req,res)=>{
+    const {email,password} =req.body;
+    const user =User.matchpassword(email,password);
+    console.log("user",user);
+    return res.redirect("/");
+    
+
+})
+
 router.get('/signup',(req,res) =>{
     return res.render("signup");
 });

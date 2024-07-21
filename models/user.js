@@ -1,4 +1,4 @@
-const { Schema,model } =require ("mongoose");
+const { Schema,model, Error } =require ("mongoose");
 const {createHmac,randomBytes} =require("node:crypto");
 
 const userSchema =new Schema(
@@ -52,6 +52,21 @@ userSchema.pre("save",function(next){
     next();
 
 
+})
+
+//creating the virtual function matching the password which return true or false;
+userSchema.static('matchpassword', async function(email,password){
+    const user =await this.findOne({email});
+    if(!user) throw new Error('User not found');
+
+    const salt =user.salt;
+    const hashedPassword =user.password;
+
+    const userProvidedHash =createHmac("sha256",salt)
+    .update(password)
+    .digest("hex");
+    if(hashedPassword !== userProvidedHash) throw new Error('Incorrect password')
+    return {...user,password:undefined,salt:undefined}
 })
 
 
