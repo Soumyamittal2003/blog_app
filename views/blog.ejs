@@ -9,9 +9,38 @@
 
 <div class="container mt-">
     <h1><%= blog.title %></h1>
-    <img src="<%= blog.coverImageURL %>" width="700px"/>
+    <img src="<%= blog.coverImageURL %>" width="500px" height="300px" allign="center"/>
     <pre><%= blog.body %></pre>
 </div>
+
+<div class="container mt-3">
+<img src="<%= blog.createdBy.profileImageURL %>" /> <%= blog.createdBy.fullName %>
+</div>
+
+<div class="container mt-4">
+    <h1>Comments</h1>
+    
+    <% if (locals.user) { %>
+        <form id="comment" action="/blog/comment/<%=  blog._id %>" method="post">
+        
+            <div class="mb-3">
+              
+              <input type="text" class="form-control" id="comment" 
+              name="content"
+              placeholder="Enter your comment">
+              
+            </div>
+            
+            
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+     
+    <% } %>
+</div>
+
+
+
+
 
 <%- include('./partials/script') %>
 </body>
